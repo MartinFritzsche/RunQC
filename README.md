@@ -6,12 +6,13 @@ An R Markdown script to automatically generate interactive post-run QC reports f
 2. Combine plots with general info about sequencing run (e.g. reagent info, included projects, multiplex-info)
 
 ## Secondary Goals
-
+1. Interactive plots
+2. Multi-run comparisons
 
 ## Inputs
-⋅⋅* InterOp Folder
-⋅⋅* runParameters.xml
-⋅⋅* SampleSheet.csv
+- InterOp Folder
+- runParameters.xml
+- SampleSheet.csv
 
 ## Outputs
-⋅⋅* html report
+- html report

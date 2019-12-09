@@ -1,5 +1,6 @@
 # RunQC
 An R Markdown script to automatically generate interactive post-run QC reports for Illumina MiSeq and NextSeq.
+Current version: 0.01
 
 ## Primary Goals
 1. Generate plots similar to what is possible within [Illumina Sequence Analysis Viewer](https://emea.support.illumina.com/content/dam/illumina-support/documents/documentation/software_documentation/sav/sequencing-analysis-viewer-v-2-4-software-guide-15066069-04.pdf)
@@ -12,6 +13,7 @@ An R Markdown script to automatically generate interactive post-run QC reports f
 
 ## Maybe
 - Turn into package
+- Extend parser from [savR package](https://github.com/bcalder/savR) to handle sample multiplex info 
 
 ## Inputs
 - InterOp Folder

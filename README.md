@@ -7,7 +7,11 @@ An R Markdown script to automatically generate interactive post-run QC reports f
 
 ## Secondary Goals
 1. Interactive plots
-2. Multi-run comparisons
+2. Integrate into post-sequencing pipeline on cluster
+3. Multi-run comparisons
+
+## Maybe
+- Turn into package
 
 ## Inputs
 - InterOp Folder

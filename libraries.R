@@ -17,3 +17,6 @@ library(ggplot2)
 
 # Fonts for plots
 library(extrafont)
+
+# Interactive plots
+library(plotly)

@@ -38,11 +38,12 @@ quality_overview %>%
           hoverinfo = "text", text = ~paste0(round(Perc * 100, 2), "%"),
           colors = c("firebrick2", "darkolivegreen2")) %>%
   add_bars() %>%
-  layout(showlegend = FALSE, 
-         xaxis = list(title = "Q Score Distribution", dtick = 1, tickangle = 0), 
+  layout(title = "Q Score Distribution",
+         showlegend = FALSE, 
+         xaxis = list(title = "Q Score", dtick = 1, tickangle = 0), 
          yaxis = list(title = "Total Bases"))
 
-
+rm(quality_overview)
 
 ###### Quality overview by cycle ######
 
@@ -72,8 +73,21 @@ ggplot(quality_overview_cycle, aes(x = cycle, y = Perc_Pass, group = cycle)) +
   ggtitle("Quality Overview by Cycle")
 
 
+# Same with plotly
+quality_overview_cycle %>%
+  plot_ly(x = ~cycle, y = ~Perc_Pass,
+          hoverinfo = "text", 
+          text = ~paste("Tile: ", tile, "<br>",
+                        "Cycle: ", cycle)) %>%
+  add_boxplot(boxpoints = "outliers", 
+              marker = list(color = "red")) %>%
+  layout(title = "Quality Overview by Cycle",
+         xaxis = list(title = "Cycle", dtick = 10, tickangle = 90), 
+         yaxis = list(title = "% Clusters >= Q30"))
 
-# Quality overview by tile and cycle
+
+###### Quality overview by tile and cycle ######
+
 quality_overview_tile <- select(quality_overview_cycle, -c(Fail, Pass))
 
 r1  <- subset(quality_overview_tile, cycle <= run_info$ReadLength)

@@ -56,12 +56,11 @@ path <- file.path(paste("./data", sequencer_type, run_date, sep = "/"))
 
 fc <- savR(path) # Generate SAV project object from Illumina binaries
 
-rm(sequencer_type, run_date)
 #loadfonts(device = "win")
 
 ####### Run Metrics #######
 
-source(file = run_metrics.R)
+source(file = "run_metrics.R")
 
 ####### Quality Metrics #######
 

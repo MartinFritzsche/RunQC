@@ -81,4 +81,6 @@ rm(run_xml,
    readDesign_temp, 
    readDesign_temp_df, 
    readDesign_temp_ls, 
-   quality_temp)
+   quality_temp, 
+   sequencer_type,
+   run_date)

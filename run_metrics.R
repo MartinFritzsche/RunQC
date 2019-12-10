@@ -23,6 +23,7 @@ run_info <- list(Sequencer = sequencer_type,
 # Generate warning message if any reagent's expiry date is prior to the run date
 run_info$ExpiryWarning = run_info$RunDate > run_info$FlowCellExpiry & run_info$RunDate > run_info$BufferExpiry & run_info$RunDate > run_info$ReagentsExpiry
 
+
 # Fetch info about read design
 readDesign_temp <- reads(fc)
 readDesign_temp_ls <- list()
@@ -73,6 +74,27 @@ run_info$Q30 <- round(sum(quality_temp$Perc * 100), digits = 2)
 run_info$OutputQ30 <- sum(quality_temp$Perc) * run_info$OutputTotal
 
 
+# Define starting points of reads (cycle) to be used in plots
+if (run_info$RunDesign == "Paired-End") {
+   if (run_info$IndexDesign == "Dual-Indexed") {# Paired-End | Dual-Indexed
+      run_info$read_intercepts <- c(R1 = 1, 
+                           R2 = 1 + run_info$ReadLength, 
+                           R3 = 1 + run_info$ReadLength + run_info$IndexLength, 
+                           R4 = 1 + run_info$ReadLength + 2 * run_info$IndexLength)
+   } else {# Paired-End | Single-Indexed
+      run_info$read_intercepts <- c(R1 = 1, 
+                           R2 = 1 + run_info$ReadLength, 
+                           R3 = 1 + run_info$ReadLength + run_info$IndexLength)
+   }
+} else if (run_info$RunDesign == "Single-End") {# Single-End | Single-Indexed
+   run_info$read_intercepts <- c(R1 = 1, 
+                        R2 = 1 + run_info$ReadLength)
+   
+} else {
+   run_info$read_intercepts <- "Invalid Design"
+}
+
+
 # Clean-up
 rm(run_xml, 
    temp, 
@@ -83,4 +105,5 @@ rm(run_xml,
    readDesign_temp_ls, 
    quality_temp, 
    sequencer_type,
-   run_date)
+   run_date,
+   i)

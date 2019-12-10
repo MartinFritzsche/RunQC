@@ -2,6 +2,7 @@
 
 # Master: RunQC_script.R
 
+
 # Parse quality metrics (depends on sequencer)
 if (run_info$Sequencer == "MiSeq") {
   quality_df <- qualityMetrics(fc) # This does not work for NextSeq!
@@ -45,6 +46,7 @@ quality_overview %>%
 
 rm(quality_overview)
 
+
 ###### Quality overview by cycle ######
 
 quality_overview_cycle <- quality_df %>%
@@ -56,15 +58,11 @@ quality_overview_cycle <- quality_df %>%
   pivot_wider(names_from = "Threshold", values_from = "Sum") %>%
   mutate(Perc_Pass = Pass / (Pass + Fail) * 100)
 
-read_intercepts <- c(R1 = 1, 
-                     R2 = 1 + run_info$ReadLength, 
-                     R3 = 1 + run_info$ReadLength + run_info$IndexLength, 
-                     R4 = 1 + run_info$ReadLength + 2 * run_info$IndexLength)
 
 ggplot(quality_overview_cycle, aes(x = cycle, y = Perc_Pass, group = cycle)) + 
   geom_boxplot(outlier.size = 1, outlier.colour = "red") +
-  geom_vline(xintercept = read_intercepts, colour = "blue", linetype = "dashed") +
-  annotate("text", x = read_intercepts, y = 104, label = names(read_intercepts), colour = "blue", size = 3.6, hjust = -0.3) +
+  geom_vline(xintercept = run_info$read_intercepts, colour = "blue", linetype = "dashed") +
+  annotate("text", x = run_info$read_intercepts, y = 104, label = names(run_info$read_intercepts), colour = "blue", size = 3.6, hjust = -0.3) +
   theme_minimal() +
   theme(axis.text.x = element_text(angle = 90, hjust = 1),
         plot.title = element_text(face = "bold")) +
@@ -74,6 +72,21 @@ ggplot(quality_overview_cycle, aes(x = cycle, y = Perc_Pass, group = cycle)) +
 
 
 # Same with plotly
+
+# Initiate list containing line info (for read start intercepts)
+line <- list(
+  type = "line",
+  line = list(color = "green", dash = "dot", width = 1),
+  xref = "x", yref = "y",
+  y0 = 0, y1 = 100)
+
+lines <- list()
+for (i in run_info$read_intercepts) {
+  line[["x0"]] <- i
+  line[["x1"]] <- i
+  lines <- c(lines, list(line))
+}
+
 quality_overview_cycle %>%
   plot_ly(x = ~cycle, y = ~Perc_Pass,
           hoverinfo = "text", 
@@ -82,6 +95,7 @@ quality_overview_cycle %>%
   add_boxplot(boxpoints = "outliers", 
               marker = list(color = "red")) %>%
   layout(title = "Quality Overview by Cycle",
+         shapes = lines,
          xaxis = list(title = "Cycle", dtick = 10, tickangle = 90), 
          yaxis = list(title = "% Clusters >= Q30"))
 
@@ -108,9 +122,12 @@ draw_tile_plot <- function(df) {
     scale_y_discrete("Tile", expand = c(0, 0))
 } 
 
-draw_tile_plot(subset(r1, lane == 1)) + 
+p <- draw_tile_plot(subset(r1, lane == 1)) + 
   scale_x_continuous("Cycle", breaks = seq(from = 0, to = run_info$ReadLength, by = 10), expand = c(0, 0)) +
   ggtitle("R1 Tile Quality - Lane 1")
+
+ggplotly(p)
+
 
 draw_tile_plot(subset(r1, lane == 2)) + 
   scale_x_continuous("Cycle", breaks = seq(from = 0, to = run_info$ReadLength, by = 10), expand = c(0, 0)) +

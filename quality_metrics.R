@@ -201,7 +201,8 @@ rm(draw_tile_plot,
    quality_perc, 
    quality_cycle, 
    quality_tile_cycle,
-   line
+   line,
+   lines,
    p,
    i)
 

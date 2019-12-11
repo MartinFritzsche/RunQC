@@ -1,6 +1,7 @@
 ####### Run Metrics #######
 
 # Master: RunQC_script.R
+# Requires Upstream: RunQC_script.R
 
 # Parse runParameters.xml
 run_xml <- read_xml(paste0(path, "/runParameters.xml"))
@@ -19,6 +20,7 @@ run_info <- list(Sequencer = sequencer_type,
                  ReagentsExpiry = as.Date(substr(xml_text(xml_find_all(run_xml, ".//ExpirationDate"))[3], start = 1, stop = 10), "%Y-%m-%d"),
                  Projects = unlist(strsplit(xml_text(xml_find_all(run_xml, ".//ExperimentName")), "_")),
                  Chemistry = xml_text(xml_find_all(run_xml, ".//Chemistry")))
+
 
 # Generate warning message if any reagent's expiry date is prior to the run date
 run_info$ExpiryWarning = run_info$RunDate > run_info$FlowCellExpiry & run_info$RunDate > run_info$BufferExpiry & run_info$RunDate > run_info$ReagentsExpiry

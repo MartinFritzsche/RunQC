@@ -7,3 +7,5 @@ test_report_files
 test_report_cache/
 test_report_files/
 test_report.Rmd
+# Test data sets
+data/

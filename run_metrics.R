@@ -58,19 +58,23 @@ run_info$OutputTotal <- output_temp
 
 
 # Calculate average % >Q30
-quality_temp <- fc@parsedData$savQualityFormatV5@data %>%
-  select(Q1:Q47) %>%
-  colSums() %>%
-  as.data.frame() %>%
-  tibble::rownames_to_column("Quality") %>%
-  mutate(Quality = as.integer(substring(Quality, 2))) %>%
-  mutate(Threshold = ifelse(Quality > 29, "Pass", "Fail"))
 
-names(quality_temp)[2] <- "Total"
+# Parse quality data dependening on sequencer
+if (run_info$Sequencer == "MiSeq") {
+   quality_temp <- qualityMetrics(fc) # This does not work for NextSeq!
+} else {
+   quality_temp <- fc@parsedData$savQualityFormatV5@data # This does!
+}
 
 quality_temp <- quality_temp %>%
-  mutate(Perc = Total / sum(Total)) %>%
-  filter(Threshold == "Pass")
+   select(Q1:Q47) %>%
+   colSums() %>%
+   as.data.frame() %>%
+   tibble::rownames_to_column("Quality") %>%
+   mutate(Quality = as.integer(substring(Quality, 2))) %>%
+   rename(Total = '.') %>%
+   mutate(Perc = Total / sum(Total)) %>%
+   filter(Quality > 29) 
 
 run_info$Q30 <- round(sum(quality_temp$Perc * 100), digits = 2)
 run_info$OutputQ30 <- sum(quality_temp$Perc) * run_info$OutputTotal

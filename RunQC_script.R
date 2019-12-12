@@ -1,7 +1,9 @@
 # Author:   Martin Fritzsche
 # Date:     21/11/2019
 # Purpose:  Develop script-based post-run sequencing QC
-# Input:    InterOp folder, runParameters.xml, SampleSheet.csv
+# Input:    InterOp folder, 
+#           runParameters.xml
+#           SampleSheet.csv
 # Output:   HTML rendered markdown report containing plots and tables
 
 
@@ -11,8 +13,8 @@
 source(file = "libraries.R")
 
 # [ TO DO ] Use that as input for script
-sequencer_type <- "NextSeq"
-run_date <- "191106"
+sequencer_type <- "MiSeq"
+run_date <- "191209"
 
 path <- file.path(paste("./data", sequencer_type, run_date, sep = "/"))
 

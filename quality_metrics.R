@@ -193,7 +193,7 @@ ggplot(quality_cycle, aes(x = cycle, y = Value)) +
 #   ggtitle("Cluster Quality per Cycle")
 
 
-# Cleanup
+######  Cleanup ###### 
 rm(draw_tile_plot, 
    quality_df, 
    quality_overview, 

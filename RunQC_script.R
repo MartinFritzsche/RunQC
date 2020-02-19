@@ -13,8 +13,8 @@
 source(file = "libraries.R")
 
 # [ TO DO ] Use that as input for script
-sequencer_type <- "MiSeq"
-run_date <- "191209"
+sequencer_type <- "NextSeq"
+run_date <- "200122"
 
 path <- file.path(paste("./data", sequencer_type, run_date, sep = "/"))
 

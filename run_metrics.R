@@ -23,7 +23,9 @@ run_info <- list(Sequencer = sequencer_type,
 
 
 # Generate warning message if any reagent's expiry date is prior to the run date
-run_info$ExpiryWarning = run_info$RunDate > run_info$FlowCellExpiry & run_info$RunDate > run_info$BufferExpiry & run_info$RunDate > run_info$ReagentsExpiry
+run_info$ExpiryWarning = run_info$RunDate > run_info$FlowCellExpiry & 
+                           run_info$RunDate > run_info$BufferExpiry & 
+                           run_info$RunDate > run_info$ReagentsExpiry
 
 
 # Fetch info about read design

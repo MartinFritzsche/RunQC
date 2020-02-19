@@ -38,10 +38,10 @@ base_tile_avg <- intensity_df %>%
   pivot_longer(-c(cycle), names_to = "Base", values_to = "Value")
 
 
-ggplot(base_tile_avg, aes(x = cycle, y = Value, colour = Base)) +
+p1 <- ggplot(base_tile_avg, aes(x = cycle, y = Value, colour = Base)) +
   geom_line() +
   geom_vline(xintercept = run_info$read_intercepts, colour = "blue", linetype = "dashed") +
-  annotate("text", x = run_info$read_intercepts, y = 104, label = names(run_info$read_intercepts), colour = "blue", size = 3.6, hjust = -0.3) +
+  annotate("text", x = run_info$read_intercepts + 1, y = 104, label = names(run_info$read_intercepts), colour = "blue", size = 3.6) +
   theme_minimal() +
   theme(legend.position = "top",
         legend.justification = 0,
@@ -50,7 +50,7 @@ ggplot(base_tile_avg, aes(x = cycle, y = Value, colour = Base)) +
   scale_x_continuous("Cycle", breaks = seq(from = 0, to = cycles(fc), by = 10), expand = c(0, 0)) +
   ggtitle("Base Composition per Cycle")
 
-
+ggplotly(p1)
 
 ###### Base Call Dispersion across Tiles and by Swath and Cameras (for NextSeq only!) ######
 if (run_info$Sequencer == "NextSeq") {
@@ -62,7 +62,7 @@ if (run_info$Sequencer == "NextSeq") {
               `T` = sd(Per_T)) %>%
     pivot_longer(-c(cycle, Swath, Camera), names_to = "Base", values_to = "SD")
   
-  ggplot(base_tile_sd, aes(x = cycle, y = SD, colour = Base)) +
+  p2 <- ggplot(base_tile_sd, aes(x = cycle, y = SD, colour = Base)) +
     geom_line() +
     facet_grid(vars(Camera), vars(Swath)) +
     theme_minimal() +
@@ -75,6 +75,7 @@ if (run_info$Sequencer == "NextSeq") {
           strip.text = element_text(face = "bold"),
           axis.text.x = element_text(angle = 90, hjust = 1)) +
     ggtitle("Base Call Dispersion across Tiles")
+  ggplotly(p2)
 } else {
   base_tile_sd <- intensity_df %>%
     group_by(cycle) %>%
@@ -84,7 +85,7 @@ if (run_info$Sequencer == "NextSeq") {
               `T` = sd(Per_T)) %>%
     pivot_longer(-c(cycle), names_to = "Base", values_to = "SD")
   
-  ggplot(base_tile_sd, aes(x = cycle, y = SD, colour = Base)) +
+  p2 <- ggplot(base_tile_sd, aes(x = cycle, y = SD, colour = Base)) +
     geom_line() +
     theme_minimal() +
     geom_vline(xintercept = run_info$read_intercepts, colour = "blue", linetype = "dashed") +
@@ -95,7 +96,7 @@ if (run_info$Sequencer == "NextSeq") {
           legend.title = element_text(face = "bold"),
           axis.text.x = element_text(angle = 90, hjust = 1)) +
     ggtitle("Base Call Dispersion across Tiles")
-  
+  ggplotly(p2)
 }
 
 
@@ -169,17 +170,14 @@ for (i in unique(base_tile_entropy$lane)) {
 
 
 
-
-
-
-
-
 # Clean-up
 rm(base_tile_avg,
    base_tile_entropy,
    base_tile_sd,
    base_tile_sep,
    intensity_df,
-   p,
+   p1, p2,
+   i,
    shannon_entropy,
    draw_tile_entropy_plot)
+gc()

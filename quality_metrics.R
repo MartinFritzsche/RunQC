@@ -34,7 +34,7 @@ quality_overview <- quality_df %>%
 #   theme(legend.position = "none")
 
 
-# Same with plotly
+# Q Score Distribution with plotly
 quality_overview %>%
   plot_ly(x = ~as.factor(Quality), y = ~Total, color = ~Threshold, 
           hoverinfo = "text", text = ~paste0(round(Perc * 100, 2), "%"),
@@ -44,8 +44,6 @@ quality_overview %>%
          showlegend = FALSE, 
          xaxis = list(title = "Q Score", dtick = 1, tickangle = 0), 
          yaxis = list(title = "Total Bases"))
-
-rm(quality_overview)
 
 
 ###### Quality overview by cycle ######
@@ -97,7 +95,7 @@ quality_overview_cycle %>%
               marker = list(color = "red")) %>%
   layout(title = "Quality Overview by Cycle",
          shapes = lines,
-         xaxis = list(title = "Cycle", dtick = 10, tickangle = 90), 
+         xaxis = list(title = "Cycle", dtick = 10), 
          yaxis = list(title = "% Clusters >= Q30"))
 
 
@@ -107,6 +105,7 @@ quality_overview_cycle %>%
 draw_tile_plot <- function(df) {
   ggplot(df, aes(x = cycle, y = as.factor(tile), fill = Perc_Pass)) +
     geom_tile(colour = "grey33") +
+    annotate("text", x = run_info$read_intercepts, y = 1, label = names(run_info$read_intercepts), colour = "grey", size = 3) +
     theme_minimal() +
     theme(axis.ticks = element_line(),
           axis.text.y = element_text(size = 3),
@@ -198,11 +197,7 @@ rm(draw_tile_plot,
    quality_df, 
    quality_overview, 
    quality_overview_cycle, 
-   quality_perc, 
    quality_cycle, 
-   quality_tile_cycle,
    line,
    lines,
-   p,
    i)
-

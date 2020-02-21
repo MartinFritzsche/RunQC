@@ -14,7 +14,7 @@ source(file = "libraries.R")
 
 # [ TO DO ] Use that as input for script
 sequencer_type <- "NextSeq"
-run_date <- "200124"
+run_date <- "200219"
 
 path <- file.path(paste("./data", sequencer_type, run_date, sep = "/"))
 

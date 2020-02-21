@@ -20,3 +20,6 @@ library(extrafont)
 
 # Interactive plots
 library(plotly)
+
+# Arrange plots in grid
+library(ggpubr)

@@ -101,7 +101,7 @@ if (run_info$Sequencer == "NextSeq") {
 
 
 
-###### Base Call distribution per tile and cycle ######
+###### Base Call Distribution per tile and cycle ######
 base_tile_sep <- intensity_df %>%
   select(tile, cycle, Per_A, Per_C, Per_G, Per_T) %>%
   pivot_longer(-c(cycle, tile), names_to = "Base", values_to = "Percent")
@@ -119,6 +119,27 @@ ggplot(base_tile_sep, aes(x = cycle, y = as.factor(tile), fill = Percent)) +
         legend.title = element_text(face = "bold"),
         strip.text = element_text(face = "bold"),
         axis.text.x = element_text(angle = 90, hjust = 1))
+
+
+###### Base Call Distribution per Camera
+base_camera_sep <- base_tile_sep %>%
+  mutate(Camera = substring(as.character(tile), first = 3, last = 3)) %>%
+  mutate(Swath = substring(as.character(tile), first = 2, last = 2)) %>%
+  mutate(Surface = ifelse(substring(as.character(tile), first = 1, last = 1) == "1", "Top", "Bottom"))
+
+base_camera_sep$Camera <- factor(base_camera_sep$Camera, levels = c("1", "2", "3", "4", "5", "6"), 
+                               labels = c("Camera 1", "Camera 2", "Camera 3", "Camera 4", "Camera 5", "Camera 6"))
+base_camera_sep$Base <- factor(base_camera_sep$Base, levels = c("Per_A", "Per_C", "Per_T", "Per_G"), 
+                               labels = c("A", "C", "T", "G"))
+
+
+ggplot(base_camera_sep, aes(x = Base, y = Percent, colour = Camera)) +
+  geom_boxplot() +
+  facet_grid(. ~ Surface) +
+  ggtitle("Base Composition per Camera") +
+  theme_minimal() +
+  theme(strip.text = element_text(face = "bold"))
+
 
 
 ###### Shannon Entropy ######
@@ -150,11 +171,12 @@ rm(base_tile_temp)
 draw_tile_entropy_plot <- function(df) {
   ggplot(df, aes(x = cycle, y = as.factor(tile), fill = Shannon)) +
     geom_tile(colour = "grey33") +
+    annotate("text", x = run_info$read_intercepts, y = 1, label = names(run_info$read_intercepts), colour = "grey", size = 3) +
     theme_minimal() +
     theme(axis.ticks = element_line(),
           axis.text.y = element_text(size = 3),
           plot.title = element_text(face = "bold")) +
-    scale_fill_gradient(low = "red", high = "blue", name = "Shannon Entropy") +
+    scale_fill_gradient(limits = c(0, 2), low = "red", high = "blue", name = "Shannon Entropy") +
     scale_x_continuous("Cycle", breaks = seq(from = 0, to = cycles(fc), by = 10), expand = c(0, 0)) +
     scale_y_discrete("Tile", expand = c(0, 0))
 } 
@@ -169,12 +191,12 @@ for (i in unique(base_tile_entropy$lane)) {
 
 
 
-
 # Clean-up
 rm(base_tile_avg,
    base_tile_entropy,
    base_tile_sd,
    base_tile_sep,
+   base_camera_sep,
    intensity_df,
    p1, p2,
    i,
